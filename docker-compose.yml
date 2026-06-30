@@ -1,0 +1,26 @@
+services:
+  pokemon-showdown:
+    build:
+      context: ./
+      dockerfile: .docker/pokemon_showdown/Dockerfile
+    networks:
+      - poke-net
+  agent:
+    build:
+      context: ./
+      dockerfile: .docker/agent/Dockerfile
+    volumes:
+      - ./projectpokepick:/app/projectpokepick
+    environment:
+      - ENV=dev
+      - SHOWDOWN_SERVER_URI=pokemon-showdown:8000
+    tty: true
+    restart: always
+    depends_on:
+      - pokemon-showdown
+    networks:
+      - poke-net
+
+networks:
+  poke-net:
+    driver: bridge
